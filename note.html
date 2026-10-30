@@ -6,16 +6,15 @@
     <meta name="theme-color" content="#f3f2eb" />
     <meta name="description" content="A birthday note for Aidil." />
     <title>A Birthday Note for Aidil</title>
-    <link rel="stylesheet" href="app.css?v=4" />
-    <script src="app.js?v=4" defer></script>
+    <link rel="stylesheet" href="app.css?v=5" />
+    <script src="app.js?v=5" defer></script>
   </head>
   <body>
     <header class="topbar">
-      <a class="wordmark" href="index.html?v=4" aria-label="Aidil's birthday home">A little surprise</a>
+      <a class="wordmark" href="index.html?v=5" aria-label="Aidil's birthday home">A little surprise</a>
       <nav class="page-nav" aria-label="Birthday pages">
-        <a href="index.html?v=4">Home</a>
-        <a href="note.html?v=4" aria-current="page">Birthday note</a>
-        <a href="wish.html?v=4">Make a wish</a>
+        <a href="index.html?v=5">Home</a>
+        <a href="note.html?v=5" aria-current="page">Birthday note</a>
       </nav>
       <button class="music-toggle" id="music-toggle" type="button" aria-label="Play birthday song" aria-pressed="false">
         <span class="music-label">Play the birthday song</span>
@@ -32,8 +31,13 @@
           <p class="story-lead">Thanks for being you, Aidil.</p>
           <p>I hope this next year brings good surprises, new stories, and plenty of moments worth keeping.</p>
           <p>Have the best birthday. You deserve it.</p>
-          <a class="primary-link" href="wish.html?v=4">Continue to your wish</a>
+          <div class="wish-prompt">
+            <p>Take a quiet moment, think of something good, and make it yours.</p>
+            <button class="wish-button" id="wish-button" type="button">Make a wish</button>
+            <p class="wish-status" id="wish-status" aria-live="polite" aria-atomic="true"></p>
+          </div>
         </div>
+        <div class="confetti" id="confetti" aria-hidden="true"></div>
       </section>
     </main>
 

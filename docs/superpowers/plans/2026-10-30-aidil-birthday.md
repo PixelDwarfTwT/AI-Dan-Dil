@@ -4,7 +4,7 @@
 
 **Goal:** Replace the legacy birthday page with a responsive, personal website for Aidil.
 
-**Architecture:** Keep a static, three-page site with semantic HTML, shared CSS variables, and a small vanilla JavaScript file. Reuse `hbd.mp3` and add a generated cake image.
+**Architecture:** Keep a static, two-page site with semantic HTML, shared CSS variables, and a small vanilla JavaScript file. Reuse `hbd.mp3` and add a generated cake image.
 
 **Tech Stack:** HTML, CSS, browser JavaScript, existing `http-server`.
 
@@ -46,10 +46,16 @@
 
 **Files:**
 - Modify: `index.html`, `app.css`, `app.js`
-- Create: `note.html`, `wish.html`
+- Create: `note.html`
 - Modify: `README.md`, package metadata, and page tests
 
-- [x] Write page-structure checks for three pages, shared navigation, active-page state, and local assets.
-- [x] Add a dedicated birthday note page and a dedicated wish page.
+- [x] Write page-structure checks for two pages, shared navigation, active-page state, and local assets.
+- [x] Add a dedicated birthday note page and a wish interaction on that page.
 - [x] Keep the shared music control and palette consistent across the pages.
 - [x] Verify the page layouts and wish interaction in the browser at desktop and mobile widths.
+
+### Task 3: Keep the experience to two pages
+
+- [x] Merge the wish interaction into `note.html` and remove `wish.html`.
+- [x] Update cache-busted navigation links, documentation, and regression checks.
+- [x] Verify both pages and the wish interaction locally before updating GitHub `main`.

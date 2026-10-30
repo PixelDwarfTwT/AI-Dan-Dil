@@ -1,6 +1,6 @@
 # A birthday for Aidil
 
-A small birthday site made for Aidil. It has three pages: a greeting, a personal note, and a page to make a wish. The same soft colors and simple navigation carry through each page.
+A small birthday site made for Aidil. It has two pages: a greeting and a personal note. The wish interaction lives on the note page, and the same soft colors and simple navigation carry through both pages.
 
 The site is built with static HTML, CSS, and JavaScript. Music starts only when the visitor presses the music control.
 

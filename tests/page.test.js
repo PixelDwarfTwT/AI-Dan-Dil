@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
-const pageFiles = ['index.html', 'note.html', 'wish.html'];
+const pageFiles = ['index.html', 'note.html'];
 const pages = Object.fromEntries(pageFiles.map((file) => {
   const fullPath = path.join(root, file);
   return [file, fs.existsSync(fullPath) ? fs.readFileSync(fullPath, 'utf8') : ''];
@@ -12,7 +12,7 @@ const pages = Object.fromEntries(pageFiles.map((file) => {
 const css = fs.readFileSync(path.join(root, 'app.css'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 
-test('birthday greeting is split into three personalized pages', () => {
+test('birthday greeting is split into two personalized pages', () => {
   for (const file of pageFiles) {
     assert.ok(fs.existsSync(path.join(root, file)), file + ' exists');
     assert.match(pages[file], /<title>[^<]*Aidil[^<]*<\/title>/i);
@@ -21,24 +21,23 @@ test('birthday greeting is split into three personalized pages', () => {
 
   assert.match(pages['index.html'], /Today is your day/i);
   assert.match(pages['note.html'], /A note for you/i);
-  assert.match(pages['wish.html'], /Make a wish/i);
+  assert.match(pages['note.html'], /Make a wish/i);
+  assert.equal(fs.existsSync(path.join(root, 'wish.html')), false);
 });
 
-test('every page has working navigation and marks the current page', () => {
+test('both pages link to each other and mark the current page', () => {
   for (const file of pageFiles) {
     const html = pages[file];
     for (const target of pageFiles) {
-      assert.match(html, new RegExp('href="' + target + '\\?v=4"'), file + ' links to ' + target);
+      assert.match(html, new RegExp('href="' + target + '\\?v=5"'), file + ' links to ' + target);
     }
-    assert.match(html, new RegExp('href="' + file + '\\?v=4"[^>]*aria-current="page"'));
+    assert.match(html, new RegExp('href="' + file + '\\?v=5"[^>]*aria-current="page"'));
   }
 });
 
 test('birthday artwork and song use local assets', () => {
   for (const file of pageFiles) assert.match(pages[file], /src="hbd\.mp3"/i);
-  for (const file of ['index.html', 'wish.html']) {
-    assert.match(pages[file], /src="aidil-birthday\.png(?:\?[^\"]*)?"/i);
-  }
+  assert.match(pages['index.html'], /src="aidil-birthday\.png(?:\?[^\"]*)?"/i);
   assert.ok(fs.statSync(path.join(root, 'aidil-birthday.png')).size > 1000);
   assert.ok(fs.statSync(path.join(root, 'hbd.mp3')).size > 1000);
 });
@@ -48,9 +47,9 @@ test('music and wish controls are accessible and use no runtime CDNs', () => {
     assert.match(pages[file], /id="music-toggle"[^>]*aria-label=/i);
     assert.doesNotMatch(pages[file], /<(?:script|link)[^>]+(?:src|href)="https?:\/\//i);
   }
-  assert.match(pages['wish.html'], /id="wish-button"/i);
-  assert.match(pages['wish.html'], /id="wish-status"[^>]*aria-live="polite"/i);
-  assert.doesNotMatch(pages['index.html'] + pages['note.html'], /id="wish-button"/i);
+  assert.match(pages['note.html'], /id="wish-button"/i);
+  assert.match(pages['note.html'], /id="wish-status"[^>]*aria-live="polite"/i);
+  assert.doesNotMatch(pages['index.html'], /id="wish-button"/i);
 });
 
 test('pages support dark mode, reduced motion, and plain visible text', () => {
