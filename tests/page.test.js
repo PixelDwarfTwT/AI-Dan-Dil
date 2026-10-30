@@ -85,7 +85,7 @@ test('both pages link to each other and mark the current page', () => {
 
 test('birthday artwork and song use local assets and request autoplay', () => {
   for (const file of pageFiles) {
-    assert.match(pages[file], /<audio[^>]*src="hbd\.mp3"[^>]*autoplay/i, file + ' requests song autoplay');
+    assert.match(pages[file], /<audio[^>]*src="hbd\.mp3\?v=11"[^>]*autoplay/i, file + ' requests the refreshed song and autoplay');
   }
   assert.match(pages['index.html'], /src="aidil-birthday\.png(?:\?[^\"]*)?"/i);
   assert.ok(fs.statSync(path.join(root, 'aidil-birthday.png')).size > 1000);
