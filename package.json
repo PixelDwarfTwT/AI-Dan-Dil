@@ -1,0 +1,26 @@
+{
+  "name": "aidil-birthday",
+  "version": "1.0.0",
+  "description": "A birthday website for Aidil",
+  "main": " ",
+  "scripts": {
+    "server-node": "http-server -p 8081 -c-1",
+    "test": "node --test tests/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PixelDwarfTwT/AI-Dan-Dil.git"
+  },
+  "keywords": [
+    "Birthday"
+  ],
+  "author": "Ayush Sharma",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/PixelDwarfTwT/AI-Dan-Dil/issues"
+  },
+  "homepage": "https://github.com/PixelDwarfTwT/AI-Dan-Dil#readme",
+  "dependencies": {
+    "http-server": "^0.11.1"
+  }
+}

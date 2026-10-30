@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f3f2eb" />
+    <meta name="description" content="A birthday note for Aidil." />
+    <title>A Birthday Note for Aidil</title>
+    <link rel="stylesheet" href="app.css?v=3" />
+    <script src="app.js?v=3" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="wordmark" href="index.html" aria-label="Aidil's birthday home">A little surprise</a>
+      <nav class="page-nav" aria-label="Birthday pages">
+        <a href="index.html">Home</a>
+        <a href="note.html" aria-current="page">Birthday note</a>
+        <a href="wish.html">Make a wish</a>
+      </nav>
+      <button class="music-toggle" id="music-toggle" type="button" aria-label="Play birthday song" aria-pressed="false">
+        <span class="music-label">Play the birthday song</span>
+      </button>
+    </header>
+
+    <main class="note-page">
+      <section class="story-layout page-wrap" aria-labelledby="note-title">
+        <div class="story-heading">
+          <p class="eyebrow">A note for you</p>
+          <h1 id="note-title">To a friend<br /><span>like you.</span></h1>
+        </div>
+        <div class="story-content">
+          <p class="story-lead">Thanks for being you, Aidil.</p>
+          <p>I hope this next year brings good surprises, new stories, and plenty of moments worth keeping.</p>
+          <p>Have the best birthday. You deserve it.</p>
+          <a class="primary-link" href="wish.html">Continue to your wish</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer page-wrap">
+      <span>Happy birthday, Aidil</span>
+      <span>Here's to a brilliant year ahead.</span>
+    </footer>
+
+    <audio id="birthday-song" src="hbd.mp3" preload="none" loop></audio>
+  </body>
+</html>
