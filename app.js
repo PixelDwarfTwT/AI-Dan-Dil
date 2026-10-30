@@ -35,34 +35,40 @@ if (motion && !reduceMotion) {
     const copy = hero.querySelectorAll('.eyebrow, h1, .hero-intro, .primary-link');
     motion.animate(
       copy,
-      { opacity: [0.72, 1], y: [12, 0] },
-      { delay: motion.stagger(0.075), duration: 0.62, ease: [0.16, 1, 0.3, 1] },
+      { opacity: [0, 1], y: [30, 0] },
+      { delay: motion.stagger(0.12), duration: 0.9, ease: [0.16, 1, 0.3, 1] },
+    );
+    const heroArt = hero.querySelector('.hero-art');
+    motion.animate(
+      heroArt,
+      { opacity: [0, 1], scale: [0.93, 1], y: [28, 0] },
+      { delay: 0.18, duration: 1.08, ease: [0.16, 1, 0.3, 1] },
     );
     motion.animate(
-      hero.querySelector('.hero-art'),
-      { opacity: [0.82, 1], scale: [0.985, 1], y: [8, 0] },
-      { delay: 0.12, duration: 0.82, ease: [0.16, 1, 0.3, 1] },
+      heroArt.querySelector('img'),
+      { y: [0, -10, 0], rotate: [0, 0.7, 0] },
+      { delay: 1.3, duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
     );
   }
 
   const storyHeading = document.querySelector('.story-heading');
   const storyContent = document.querySelector('.story-content');
   if (storyHeading) {
-    motion.animate(storyHeading, { opacity: [0.72, 1], y: [12, 0] }, { duration: 0.58, ease: [0.16, 1, 0.3, 1] });
+    motion.animate(storyHeading, { opacity: [0, 1], y: [26, 0] }, { duration: 0.9, ease: [0.16, 1, 0.3, 1] });
   }
   if (storyContent) {
-    motion.animate(storyContent, { opacity: [0.72, 1], y: [14, 0] }, { delay: 0.08, duration: 0.66, ease: [0.16, 1, 0.3, 1] });
+    motion.animate(storyContent, { opacity: [0, 1], y: [28, 0] }, { delay: 0.16, duration: 1, ease: [0.16, 1, 0.3, 1] });
   }
 
   const wishPrompt = document.querySelector('.wish-prompt');
   if (wishPrompt) {
     motion.inView(wishPrompt, (element) => {
-      motion.animate(element, { opacity: [0.78, 1], y: [10, 0] }, { duration: 0.48, ease: [0.16, 1, 0.3, 1] });
+      motion.animate(element, { opacity: [0, 1], y: [20, 0] }, { duration: 0.72, ease: [0.16, 1, 0.3, 1] });
     }, { amount: 0.3 });
   }
 
   motion.hover('.primary-link, .wish-button', (element) => {
-    motion.animate(element, { y: -2, scale: 1.015 }, { type: 'spring', stiffness: 420, damping: 28 });
+    motion.animate(element, { y: -4, scale: 1.03 }, { type: 'spring', stiffness: 420, damping: 28 });
     return () => motion.animate(element, { y: 0, scale: 1 }, { type: 'spring', stiffness: 420, damping: 28 });
   });
 }

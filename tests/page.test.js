@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const pageFiles = ['index.html', 'note.html'];
@@ -12,6 +13,31 @@ const pages = Object.fromEntries(pageFiles.map((file) => {
 const css = fs.readFileSync(path.join(root, 'app.css'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+
+function motionCallsForHomePage(reducedMotion = false) {
+  const calls = [];
+  const heroArtImage = { name: 'hero-art-image' };
+  const heroArt = { name: 'hero-art', querySelector: () => heroArtImage };
+  const hero = {
+    querySelectorAll: () => [{}, {}, {}, {}],
+    querySelector: () => heroArt,
+  };
+  const musicButton = { querySelector: () => ({}), addEventListener: () => {} };
+  const motion = {
+    animate: (target, keyframes, options = {}) => calls.push({ target, keyframes, options }),
+    stagger: (duration) => () => duration,
+    hover: () => {},
+  };
+  const document = {
+    querySelector: (selector) => selector === '#music-toggle' ? musicButton
+      : selector === '#birthday-song' ? { paused: true }
+        : selector === '.hero' ? hero : null,
+  };
+  const window = { Motion: motion, matchMedia: () => ({ matches: reducedMotion }) };
+
+  vm.runInNewContext(js, { document, window });
+  return { calls, heroArt, heroArtImage };
+}
 
 test('birthday greeting is split into two personalized pages', () => {
   for (const file of pageFiles) {
@@ -30,9 +56,9 @@ test('both pages link to each other and mark the current page', () => {
   for (const file of pageFiles) {
     const html = pages[file];
     for (const target of pageFiles) {
-      assert.match(html, new RegExp('href="' + target + '\\?v=8"'), file + ' links to ' + target);
+      assert.match(html, new RegExp('href="' + target + '\\?v=9"'), file + ' links to ' + target);
     }
-    assert.match(html, new RegExp('href="' + file + '\\?v=8"[^>]*aria-current="page"'));
+    assert.match(html, new RegExp('href="' + file + '\\?v=9"[^>]*aria-current="page"'));
   }
 });
 
@@ -48,7 +74,7 @@ test('music and wish controls are accessible and Motion is pinned locally', () =
     assert.match(pages[file], /id="music-toggle"[^>]*aria-label=/i);
     assert.match(pages[file], /<script src="vendor\/motion\.js" defer><\/script>/i);
     assert.doesNotMatch(pages[file], /<script[^>]+src="https?:\/\//i);
-    assert.match(pages[file], /<script src="app\.js\?v=8" defer><\/script>/i);
+    assert.match(pages[file], /<script src="app\.js\?v=9" defer><\/script>/i);
   }
   assert.equal(packageJson.dependencies.motion, '14.5.0');
   assert.ok(fs.statSync(path.join(root, 'vendor', 'motion.js')).size > 1000);
@@ -73,6 +99,25 @@ test('Motion animates the page and wish feedback while honoring reduced motion',
   assert.match(js, /motion\.hover\(/);
   assert.match(js, /motion\.inView\(/);
   assert.match(js, /prefers-reduced-motion:\s*reduce/);
+});
+
+test('hero artwork keeps gently floating after the entrance animation', () => {
+  const { calls, heroArt, heroArtImage } = motionCallsForHomePage();
+  const entrance = calls.find((call) => call.target === heroArt && call.options.repeat === undefined);
+  const float = calls.find((call) => call.target === heroArtImage && call.options.repeat === Infinity);
+
+  assert.ok(entrance, 'the hero artwork has an entrance animation');
+  assert.deepEqual(Array.from(entrance.keyframes.opacity), [0, 1]);
+  assert.deepEqual(Array.from(entrance.keyframes.y), [28, 0]);
+  assert.ok(entrance.options.duration >= 0.9);
+  assert.ok(float, 'the hero artwork has a repeating Motion animation');
+  assert.deepEqual(Array.from(float.keyframes.y), [0, -10, 0]);
+  assert.ok(float.options.duration >= 4);
+});
+
+test('reduced motion preference skips the Motion animations', () => {
+  const { calls } = motionCallsForHomePage(true);
+  assert.equal(calls.length, 0);
 });
 
 test('dark colors stay muted and the mobile header keeps music beside the wordmark', () => {
