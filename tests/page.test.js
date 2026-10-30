@@ -28,9 +28,9 @@ test('every page has working navigation and marks the current page', () => {
   for (const file of pageFiles) {
     const html = pages[file];
     for (const target of pageFiles) {
-      assert.match(html, new RegExp('href="' + target + '"'), file + ' links to ' + target);
+      assert.match(html, new RegExp('href="' + target + '\\?v=4"'), file + ' links to ' + target);
     }
-    assert.match(html, new RegExp('href="' + file + '"[^>]*aria-current="page"'));
+    assert.match(html, new RegExp('href="' + file + '\\?v=4"[^>]*aria-current="page"'));
   }
 });
 
