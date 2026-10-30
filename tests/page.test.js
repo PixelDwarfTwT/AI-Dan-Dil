@@ -22,7 +22,8 @@ function motionCallsForHomePage(reducedMotion = false) {
     querySelectorAll: () => [{}, {}, {}, {}],
     querySelector: () => heroArt,
   };
-  const musicButton = { querySelector: () => ({}), addEventListener: () => {} };
+  const musicButton = { querySelector: () => ({ textContent: '' }), addEventListener: () => {}, setAttribute: () => {} };
+  const song = { paused: true, play: () => Promise.resolve(), pause: () => {} };
   const motion = {
     animate: (target, keyframes, options = {}) => calls.push({ target, keyframes, options }),
     stagger: (duration) => () => duration,
@@ -30,13 +31,33 @@ function motionCallsForHomePage(reducedMotion = false) {
   };
   const document = {
     querySelector: (selector) => selector === '#music-toggle' ? musicButton
-      : selector === '#birthday-song' ? { paused: true }
+      : selector === '#birthday-song' ? song
         : selector === '.hero' ? hero : null,
   };
   const window = { Motion: motion, matchMedia: () => ({ matches: reducedMotion }) };
 
   vm.runInNewContext(js, { document, window });
   return { calls, heroArt, heroArtImage };
+}
+
+function musicHarness(play) {
+  const attributes = {};
+  const musicLabel = { textContent: 'Play the birthday song' };
+  const musicButton = {
+    querySelector: () => musicLabel,
+    addEventListener: () => {},
+    setAttribute: (name, value) => { attributes[name] = value; },
+  };
+  const song = { paused: true, play, pause: () => {} };
+  const document = {
+    querySelector: (selector) => selector === '#music-toggle' ? musicButton
+      : selector === '#birthday-song' ? song
+        : null,
+  };
+  const window = { Motion: null, matchMedia: () => ({ matches: true }) };
+
+  vm.runInNewContext(js, { document, window });
+  return { attributes, musicLabel };
 }
 
 test('birthday greeting is split into two personalized pages', () => {
@@ -62,11 +83,38 @@ test('both pages link to each other and mark the current page', () => {
   }
 });
 
-test('birthday artwork and song use local assets', () => {
-  for (const file of pageFiles) assert.match(pages[file], /src="hbd\.mp3"/i);
+test('birthday artwork and song use local assets and request autoplay', () => {
+  for (const file of pageFiles) {
+    assert.match(pages[file], /<audio[^>]*src="hbd\.mp3"[^>]*autoplay/i, file + ' requests song autoplay');
+  }
   assert.match(pages['index.html'], /src="aidil-birthday\.png(?:\?[^\"]*)?"/i);
   assert.ok(fs.statSync(path.join(root, 'aidil-birthday.png')).size > 1000);
   assert.ok(fs.statSync(path.join(root, 'hbd.mp3')).size > 1000);
+});
+
+test('starts the birthday song when the page opens', async () => {
+  let playCalls = 0;
+  const { attributes, musicLabel } = musicHarness(() => {
+    playCalls += 1;
+    return Promise.resolve();
+  });
+
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(playCalls, 1);
+  assert.equal(attributes['aria-pressed'], 'true');
+  assert.equal(attributes['aria-label'], 'Pause birthday song');
+  assert.equal(musicLabel.textContent, 'Pause the birthday song');
+});
+
+test('keeps the play button available when browser autoplay is blocked', async () => {
+  const { attributes, musicLabel } = musicHarness(() => Promise.reject(new Error('NotAllowedError')));
+
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(attributes['aria-pressed'], 'false');
+  assert.equal(attributes['aria-label'], 'Play birthday song');
+  assert.equal(musicLabel.textContent, 'Tap to play the birthday song');
 });
 
 test('music and wish controls are accessible and Motion is pinned locally', () => {
@@ -74,7 +122,7 @@ test('music and wish controls are accessible and Motion is pinned locally', () =
     assert.match(pages[file], /id="music-toggle"[^>]*aria-label=/i);
     assert.match(pages[file], /<script src="vendor\/motion\.js" defer><\/script>/i);
     assert.doesNotMatch(pages[file], /<script[^>]+src="https?:\/\//i);
-    assert.match(pages[file], /<script src="app\.js\?v=10" defer><\/script>/i);
+    assert.match(pages[file], /<script src="app\.js\?v=11" defer><\/script>/i);
   }
   assert.equal(packageJson.dependencies.motion, '14.5.0');
   assert.ok(fs.statSync(path.join(root, 'vendor', 'motion.js')).size > 1000);

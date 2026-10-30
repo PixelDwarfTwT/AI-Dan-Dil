@@ -8,26 +8,33 @@ const motion = window.Motion;
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let confettiCleanup;
 
+function setMusicState(isPlaying) {
+  musicButton.setAttribute('aria-pressed', String(isPlaying));
+  musicButton.setAttribute('aria-label', isPlaying ? 'Pause birthday song' : 'Play birthday song');
+  musicLabel.textContent = isPlaying ? 'Pause the birthday song' : 'Play the birthday song';
+}
+
+async function startSong() {
+  try {
+    await song.play();
+    setMusicState(true);
+  } catch {
+    setMusicState(false);
+    musicLabel.textContent = 'Tap to play the birthday song';
+  }
+}
+
 musicButton.addEventListener('click', async () => {
   if (song.paused) {
-    try {
-      await song.play();
-      musicButton.setAttribute('aria-pressed', 'true');
-      musicButton.setAttribute('aria-label', 'Pause birthday song');
-      musicLabel.textContent = 'Pause the birthday song';
-    } catch {
-      musicButton.setAttribute('aria-pressed', 'false');
-      musicButton.setAttribute('aria-label', 'Play birthday song');
-      musicLabel.textContent = 'Song could not start. Try again';
-    }
+    await startSong();
     return;
   }
 
   song.pause();
-  musicButton.setAttribute('aria-pressed', 'false');
-  musicButton.setAttribute('aria-label', 'Play birthday song');
-  musicLabel.textContent = 'Play the birthday song';
+  setMusicState(false);
 });
+
+startSong();
 
 if (motion && !reduceMotion) {
   const hero = document.querySelector('.hero');
