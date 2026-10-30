@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/PixelDwarfTwT/AI-Dan-Dil#readme",
   "dependencies": {
-    "http-server": "^0.11.1"
+    "http-server": "^0.11.1",
+    "motion": "14.5.0"
   }
 }

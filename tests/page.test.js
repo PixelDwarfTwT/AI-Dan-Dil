@@ -11,6 +11,7 @@ const pages = Object.fromEntries(pageFiles.map((file) => {
 }));
 const css = fs.readFileSync(path.join(root, 'app.css'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 
 test('birthday greeting is split into two personalized pages', () => {
   for (const file of pageFiles) {
@@ -29,9 +30,9 @@ test('both pages link to each other and mark the current page', () => {
   for (const file of pageFiles) {
     const html = pages[file];
     for (const target of pageFiles) {
-      assert.match(html, new RegExp('href="' + target + '\\?v=5"'), file + ' links to ' + target);
+      assert.match(html, new RegExp('href="' + target + '\\?v=8"'), file + ' links to ' + target);
     }
-    assert.match(html, new RegExp('href="' + file + '\\?v=5"[^>]*aria-current="page"'));
+    assert.match(html, new RegExp('href="' + file + '\\?v=8"[^>]*aria-current="page"'));
   }
 });
 
@@ -42,11 +43,15 @@ test('birthday artwork and song use local assets', () => {
   assert.ok(fs.statSync(path.join(root, 'hbd.mp3')).size > 1000);
 });
 
-test('music and wish controls are accessible and use no runtime CDNs', () => {
+test('music and wish controls are accessible and Motion is pinned locally', () => {
   for (const file of pageFiles) {
     assert.match(pages[file], /id="music-toggle"[^>]*aria-label=/i);
-    assert.doesNotMatch(pages[file], /<(?:script|link)[^>]+(?:src|href)="https?:\/\//i);
+    assert.match(pages[file], /<script src="vendor\/motion\.js" defer><\/script>/i);
+    assert.doesNotMatch(pages[file], /<script[^>]+src="https?:\/\//i);
+    assert.match(pages[file], /<script src="app\.js\?v=8" defer><\/script>/i);
   }
+  assert.equal(packageJson.dependencies.motion, '14.5.0');
+  assert.ok(fs.statSync(path.join(root, 'vendor', 'motion.js')).size > 1000);
   assert.match(pages['note.html'], /id="wish-button"/i);
   assert.match(pages['note.html'], /id="wish-status"[^>]*aria-live="polite"/i);
   assert.doesNotMatch(pages['index.html'], /id="wish-button"/i);
@@ -60,6 +65,14 @@ test('pages support dark mode, reduced motion, and plain visible text', () => {
   assert.match(css, /--accent:\s*#6b7656/i);
   assert.match(js, /song\.play\(\)/);
   assert.match(js, /wishStatus\.textContent/);
+});
+
+test('Motion animates the page and wish feedback while honoring reduced motion', () => {
+  assert.match(js, /window\.Motion/);
+  assert.match(js, /motion\.animate\(/);
+  assert.match(js, /motion\.hover\(/);
+  assert.match(js, /motion\.inView\(/);
+  assert.match(js, /prefers-reduced-motion:\s*reduce/);
 });
 
 test('dark colors stay muted and the mobile header keeps music beside the wordmark', () => {

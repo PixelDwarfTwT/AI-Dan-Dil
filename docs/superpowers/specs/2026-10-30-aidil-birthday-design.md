@@ -12,7 +12,7 @@ The original page uses a long jQuery button sequence, a dark loading screen, rem
 - Move to a component framework: more structure than this small static site needs.
 
 ## Scope and constraints
-Use the existing project and assets, add a generated cake image, personalize all visible recipient copy to Aidil, support light and dark system themes, provide reduced-motion behavior, and keep both pages responsive and keyboard accessible. Keep the same navigation and palette on each page. Avoid sharp color changes and special-character decorations. The music must start only after the visitor chooses it. No external runtime libraries or new npm packages.
+Use the existing project and assets, add a generated cake image, personalize all visible recipient copy to Aidil, support light and dark system themes, provide reduced-motion behavior, and keep both pages responsive and keyboard accessible. Keep the same navigation and palette on each page. Avoid sharp color changes and special-character decorations. The music must start only after the visitor chooses it. Use a pinned Motion package served locally, with no runtime CDN.
 
 ## Success checks
 Both pages name Aidil, link to each other, and fit desktop and mobile layouts. Music toggles from a user gesture, the wish interaction on the note page produces brief celebratory feedback, and both pages load from the local server with no missing assets or console errors.
