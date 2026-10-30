@@ -46,8 +46,8 @@ test('birthday greeting is split into two personalized pages', () => {
     assert.match(pages[file], /Aidil/i);
   }
 
-  assert.match(pages['index.html'], /Today is your day/i);
-  assert.match(pages['note.html'], /A note for you/i);
+  assert.match(pages['index.html'], /id="birthday-title"/i);
+  assert.match(pages['note.html'], /id="note-title"/i);
   assert.match(pages['note.html'], /Make a wish/i);
   assert.equal(fs.existsSync(path.join(root, 'wish.html')), false);
 });

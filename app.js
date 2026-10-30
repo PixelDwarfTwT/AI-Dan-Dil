@@ -76,7 +76,7 @@ if (motion && !reduceMotion) {
 if (wishButton) {
   wishButton.addEventListener('click', () => {
     confetti.replaceChildren();
-    wishStatus.textContent = 'Wish made, Aidil. Hope it comes true.';
+    wishStatus.textContent = 'Moga terkabul apapunn harapannmu itu.';
 
     if (confettiCleanup) window.clearTimeout(confettiCleanup);
     if (motion && !reduceMotion) {
