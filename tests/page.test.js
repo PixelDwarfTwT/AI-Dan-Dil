@@ -74,7 +74,7 @@ test('music and wish controls are accessible and Motion is pinned locally', () =
     assert.match(pages[file], /id="music-toggle"[^>]*aria-label=/i);
     assert.match(pages[file], /<script src="vendor\/motion\.js" defer><\/script>/i);
     assert.doesNotMatch(pages[file], /<script[^>]+src="https?:\/\//i);
-    assert.match(pages[file], /<script src="app\.js\?v=9" defer><\/script>/i);
+    assert.match(pages[file], /<script src="app\.js\?v=10" defer><\/script>/i);
   }
   assert.equal(packageJson.dependencies.motion, '14.5.0');
   assert.ok(fs.statSync(path.join(root, 'vendor', 'motion.js')).size > 1000);
@@ -87,8 +87,9 @@ test('pages support dark mode, reduced motion, and plain visible text', () => {
   assert.match(css, /prefers-color-scheme:\s*dark/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.doesNotMatch(Object.values(pages).join('\n'), /Xola|[^\x00-\x7F]/i);
-  assert.match(css, /--page:\s*#f3f2eb/i);
-  assert.match(css, /--accent:\s*#6b7656/i);
+  assert.match(css, /--page:\s*#f2eff8/i);
+  assert.match(css, /--accent:\s*#8063a6/i);
+  assert.match(pages['index.html'], /lavender, violet, and plum frosting/i);
   assert.match(js, /song\.play\(\)/);
   assert.match(js, /wishStatus\.textContent/);
 });
@@ -121,6 +122,7 @@ test('reduced motion preference skips the Motion animations', () => {
 });
 
 test('dark colors stay muted and the mobile header keeps music beside the wordmark', () => {
-  assert.match(css, /@media \(prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{[^}]*--page:\s*#353830/i);
+  assert.match(css, /@media \(prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{[^}]*--page:\s*#2c2735/i);
+  assert.match(css, /@media \(prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{[^}]*--accent:\s*#b7a2d9/i);
   assert.match(css, /@media \(max-width:\s*760px\)\s*\{[\s\S]*?\.music-toggle\s*\{[^}]*grid-area:\s*music;/i);
 });

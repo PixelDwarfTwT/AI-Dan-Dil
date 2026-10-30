@@ -82,7 +82,7 @@ if (wishButton) {
     if (motion && !reduceMotion) {
       motion.animate(wishStatus, { opacity: [0.5, 1], y: [8, 0] }, { duration: 0.4, ease: [0.16, 1, 0.3, 1] });
 
-      const colors = ['#b3bd9d', '#c9b5aa', '#e1dfd4', '#aab39d', '#d4cec1'];
+      const colors = ['#8b70b2', '#b9a5d7', '#d9cfea', '#765b9c', '#c8b9de'];
       for (let index = 0; index < 20; index += 1) {
         const piece = document.createElement('span');
         const drift = Math.round((Math.random() - 0.5) * 130);
